@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,8 +24,15 @@ namespace Fight_game
             CurrentWeapon = null; // Героят започва без оръжие
             RequiredExperienceForNextWeapon = 50; // Примерно количество опит, нужно за следващото оръжие
         }
-        public  void Attack(Target target)
+        public void Attack(Target target)
         {
+            if (target.HealthPoints <= 0)
+            {
+                Console.WriteLine($"{Name} chooses to attack {target.Name}.");
+                Console.WriteLine($"{Name} cannot attack {target.Name} because it has no health left.");
+                return; // Не продължавай с атаката, ако чудовището няма здраве
+            }
+
             int damage;
 
             if (CurrentWeapon != null)
@@ -45,15 +52,10 @@ namespace Fight_game
 
             target.HealthPoints -= damage;
 
-            if (target.HealthPoints <= 0)
-            {
-                GainExperience(target.ExperienceReward);
-                target.HealthPoints = 0;
-            }
 
             Console.WriteLine($"{Name} attacked {target.Name} for {damage} damage.");
-            
         }
+
         public bool IsCurrentWeaponBroken()
         {
             return CurrentWeapon != null && CurrentWeapon.Durability <= 0;
