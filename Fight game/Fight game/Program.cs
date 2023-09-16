@@ -1,4 +1,4 @@
-﻿
+
 
 using Fight_game;
 using System.Threading;
@@ -31,84 +31,74 @@ public class Program
             switch (choice)
             {
                 case "1":
-                    if (hero.ExperiencePoints == 0)
+                    
+                    Console.WriteLine("Choose a target:");
+                    for (int i = 0; i < monsters.Count; i++)
                     {
-                        Console.WriteLine("Choose a target:");
-                        for (int i = 0; i < monsters.Count; i++)
-                        {
-                            Console.WriteLine($"{i + 1}. {monsters[i].Name} ({monsters[i].HealthPoints} HP)");
-                        }
+                        Console.WriteLine($"{i + 1}. {monsters[i].Name} ({monsters[i].HealthPoints} HP)");
+                    }
 
-                        int targetChoice;
-                        if (int.TryParse(Console.ReadLine(), out targetChoice) && targetChoice >= 1 && targetChoice <= monsters.Count)
+                    int targetChoice;
+                    if (int.TryParse(Console.ReadLine(), out targetChoice))
+                    {
+                        if (targetChoice >= 1 && targetChoice < monsters.Count)
                         {
+
                             Target target = monsters[targetChoice - 1];
 
-                            // Атака върху чудовището
-                            hero.Attack(target);
 
-                            // Проверка дали чудовището е убито
-                            if (target.HealthPoints <= 0)
+                            if (hero.ExperiencePoints > 50)
                             {
-                                // Героят получава опит и убитото чудовище дава предмет
-                                hero.GainExperience(target.ExperienceReward);
-                                target.HealthPoints = 0;
+                                // Героят може да се бие и с голи ръце и с оръжие
+                                Console.WriteLine($"{hero.Name} chooses to attack {target.Name}.");
+                                hero.Attack(target);
 
-                                // Добавяне на предмет към инвентара
-                                Item item = new Item("Hlqb", 1); // Променете този ред според вашите предмети
-                                hero.AddItemToInventory(item);
+                                // Проверка дали чудовището е убито
+                                if (target.HealthPoints <= 0)
+                                {
+                                    // Героят получава опит и убитото чудовище дава предмет
+                                    hero.GainExperience(target.ExperienceReward);
+                                    Item item = new Item("Hlqb", 1); // Променете този ред според вашите предмети
+                                    hero.AddItemToInventory(item);
+
+                                    // Извеждане на съобщение, че чудовището е убито
+                                    Console.WriteLine($"{target.Name} has been defeated!");
+                                    monsters.Remove(target);
+                                }
+
+                                if (monsters.Count == 0)
+                                {
+                                    Console.WriteLine("All monsters have been defeated!");
+                                }
+                            }
+                            else if (hero.ExperiencePoints == 0)
+                            {
+                                // Героят може да се бие само с голи ръце
+                                Console.WriteLine($"{hero.Name} attacks with bare hands!");
+                                hero.Attack(target);
+
+                                // Проверка дали чудовището е убито
+                                if (target.HealthPoints <= 0)
+                                {
+                                    // Героят получава опит и убитото чудовище дава предмет
+                                    hero.GainExperience(target.ExperienceReward);
+                                    target.HealthPoints = 0;
+                                    Item item = new Item("Riba", 1); // Променете този ред според вашите предмети
+                                    hero.AddItemToInventory(item);
+
+                                    // Извеждане на съобщение, че чудовището е убито
+                                    Console.WriteLine($"{target.Name} has been defeated!");
+                                    monsters.Remove(target);
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Invalid target choice.");
                             }
                         }
-
-                        else
-                        {
-                            Console.WriteLine("Invalid target choice.");
-                        }
-                        Console.WriteLine($"{hero.Name} attacks with bare hands!");
-                       
                     }
-                    else if (hero.CurrentWeapon != null)
-                    {
-                        Console.WriteLine("Choose a target:");
-                        for (int i = 0; i < monsters.Count; i++)
-                        {
-                            Console.WriteLine($"{i + 1}. {monsters[i].Name} ({monsters[i].HealthPoints} HP)");
-                        }
-                        if (hero.IsCurrentWeaponBroken())
-                        {
-                            Console.WriteLine("Your current weapon is broken. Choose a new weapon.");
-                        }
-                        int targetChoice;
-                        if (int.TryParse(Console.ReadLine(), out targetChoice) && targetChoice >= 1 && targetChoice <= monsters.Count)
-                        {
-                            Target target = monsters[targetChoice - 1];
-
-                            // Атака върху чудовището
-                            hero.Attack(target);
-
-                            // Проверка дали чудовището е убито
-                            if (target.HealthPoints <= 0)
-                            {
-                                // Героят получава опит и убитото чудовище дава предмет
-                                hero.GainExperience(target.ExperienceReward);
-                                target.HealthPoints = 0;
-
-                                // Добавяне на предмет към инвентара
-                                Item item = new Item("Pyrjola", 1); // Променете този ред според вашите предмети
-                                hero.AddItemToInventory(item);
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("Invalid target choice.");
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine($"{hero.Name} does not have a weapon to attack with.");
-                    }
+                            
                     break;
-
                 case "2":
                     if (hero.ExperiencePoints >= hero.RequiredExperienceForNextWeapon)
                     {
@@ -140,6 +130,7 @@ public class Program
                         Console.WriteLine($"{hero.Name} does not have enough experience to change the weapon.");
                     }
                     break;
+                  
 
                 case "3":
                     hero.CheckInventory(); // Извеждане на инвентара
