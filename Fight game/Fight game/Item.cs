@@ -4,17 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fight_game
+namespace Game
 {
-    public class Item
+    public class Item:BaseClass
     {
-        public string Name { get; set; }
-        public int Quantity { get; set; }
-
-        public Item(string name, int quantity)
-        {
-            Name = name;
+        //public string Name { get; set; } // поле/ Характеристика на клас(обект от реален свят)
+        public int Quantity { get; set; }// поле/ Характеристика на клас(обект от реален свят)
+        public Item(string name , int quantity):base(name) // Конструктор с параметри
+        { 
+          
             Quantity = quantity;
-        }
+        } 
     }
 }

@@ -4,21 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fight_game
+namespace Game
 {
-    
-        public class Weapon
+    public class Weapon:BaseClass
+    {
+      
+       // public string Name { get; set; }
+        public int AttackDamage { get; set; }
+        public int Durability { get; set; }
+        public Weapon(string name, int attackDamage, int durability) : base(name)
         {
-            public string Name { get; set; }
-            public int AttackPoints { get; set; }
-            public int Durability { get; set; }
 
-            public Weapon(string name, int attackPoints, int durability)
-            {
-                Name = name;
-                AttackPoints = attackPoints;
-                Durability = durability;
-            }
+            AttackDamage = attackDamage;
+            Durability = durability;
         }
-    
+       
+    }
 }

@@ -1,50 +1,48 @@
+﻿using Game;
+using NUnit.Framework;
+using System.ComponentModel.Design;
+using System.Xml.Linq;
 
 
-using Fight_game;
-using System.Threading;
-
-public class Program
+class Program
 {
-    public static void Main()
-    {
-        Hero hero = new Hero("Pesho",100);
-        Weapon goldenSword = new Weapon("Golden Sword", 20, 50);
-        Weapon diamondSword = new Weapon("Diamond Sword", 30, 60);
-        Weapon epicSword = new Weapon("Epic Sword", 40, 70);
-        List<Target> monsters = new List<Target>
-        {
-    new Target("Monster", 20, 50),
-    new Target("Armored Monster", 40, 75),
-    new Target("Boss Monster", 80, 100)
-};
 
+    public static void Main() 
+    {
+        Hero hero = new Hero("Pesho", 100);
+        Weapon goldenSwrod = new Weapon("Golden Sword", 20, 20);
+        Weapon diamondSwrod = new Weapon("Diamond Sword", 40, 60);
+        Weapon epicSwrod = new Weapon("Epic Sword", 100, 200);
+
+        List<Mob> mobs = new List<Mob> { new Mob("BasicMob",20,50),
+        new Mob("ArmoredMob",40,100),
+        new Mob("EpicBoss",100,200)};
         while (true)
         {
-            Console.WriteLine("Menu:");
+            Console.WriteLine("Menu");
             Console.WriteLine("1. Attack");
-            Console.WriteLine("2. Change Weapon");
-            Console.WriteLine("3. Check Inventory");
-            Console.WriteLine("4. Quit");
+            Console.WriteLine("2. ChangeWeapon");
+            Console.WriteLine("3. CheckInventory");
+            Console.WriteLine("4. Exit");
 
-            string choice = Console.ReadLine();
-
-            switch (choice)
+            string choise = Console.ReadLine();
+            switch (choise)
             {
                 case "1":
-                    
+
                     Console.WriteLine("Choose a target:");
-                    for (int i = 0; i < monsters.Count; i++)
+                    for (int i = 0; i < mobs.Count; i++)
                     {
-                        Console.WriteLine($"{i + 1}. {monsters[i].Name} ({monsters[i].HealthPoints} HP)");
+                        Console.WriteLine($"{i + 1}. {mobs[i].Name} ({mobs[i].HealthPoints} HP)");
                     }
 
                     int targetChoice;
                     if (int.TryParse(Console.ReadLine(), out targetChoice))
                     {
-                        if (targetChoice >= 1 && targetChoice < monsters.Count)
+                        if (targetChoice >= 1 && targetChoice < mobs.Count)
                         {
 
-                            Target target = monsters[targetChoice - 1];
+                            Mob target = mobs[targetChoice - 1];
 
 
                             if (hero.ExperiencePoints > 50)
@@ -57,18 +55,18 @@ public class Program
                                 if (target.HealthPoints <= 0)
                                 {
                                     // Героят получава опит и убитото чудовище дава предмет
-                                    hero.GainExperience(target.ExperienceReward);
+                                    hero.GainEXP(target.ExpReward);
                                     Item item = new Item("Hlqb", 1); // Променете този ред според вашите предмети
                                     hero.AddItemToInventory(item);
 
                                     // Извеждане на съобщение, че чудовището е убито
                                     Console.WriteLine($"{target.Name} has been defeated!");
-                                    monsters.Remove(target);
+                                    mobs.Remove(target);
                                 }
 
-                                if (monsters.Count == 0)
+                                if (mobs.Count == 0)
                                 {
-                                    Console.WriteLine("All monsters have been defeated!");
+                                    Console.WriteLine("All mobs have been defeated!");
                                 }
                             }
                             else if (hero.ExperiencePoints == 0)
@@ -81,14 +79,14 @@ public class Program
                                 if (target.HealthPoints <= 0)
                                 {
                                     // Героят получава опит и убитото чудовище дава предмет
-                                    hero.GainExperience(target.ExperienceReward);
+                                    hero.GainEXP(target.ExpReward);
                                     target.HealthPoints = 0;
                                     Item item = new Item("Riba", 1); // Променете този ред според вашите предмети
                                     hero.AddItemToInventory(item);
 
                                     // Извеждане на съобщение, че чудовището е убито
                                     Console.WriteLine($"{target.Name} has been defeated!");
-                                    monsters.Remove(target);
+                                    mobs.Remove(target);
                                 }
                             }
                             else
@@ -97,53 +95,45 @@ public class Program
                             }
                         }
                     }
-                            
                     break;
                 case "2":
-                    if (hero.ExperiencePoints >= hero.RequiredExperienceForNextWeapon)
+                    if (hero.ExperiencePoints>=hero.NeededExpForWeapon)
                     {
-                        Console.WriteLine("Choose a weapon:");
-                        Console.WriteLine("1. Golden Sword");
-                        Console.WriteLine("2. Diamond Sword");
-                        Console.WriteLine("3. Epic Sword");
-
-                        string weaponChoice = Console.ReadLine();
-
-                        switch (weaponChoice)
+                        Console.WriteLine("Choose Weapon");
+                        Console.WriteLine("1. GoldenSword");
+                        Console.WriteLine("2. DiamonSword");
+                        Console.WriteLine("3. EpicSword");
+                        string weaponChoise = Console.ReadLine();
+                        switch (weaponChoise)
                         {
                             case "1":
-                                hero.ChangeWeapon(goldenSword);
+                                hero.ChangeWeapon(goldenSwrod);
                                 break;
                             case "2":
-                                hero.ChangeWeapon(diamondSword);
+                                hero.ChangeWeapon(diamondSwrod);
                                 break;
                             case "3":
-                                hero.ChangeWeapon(epicSword);
+                                hero.ChangeWeapon(epicSwrod);
                                 break;
+
                             default:
-                                Console.WriteLine("Invalid weapon choice.");
+                                Console.WriteLine( "Invalid weapon choose");
                                 break;
                         }
                     }
-                    else
-                    {
-                        Console.WriteLine($"{hero.Name} does not have enough experience to change the weapon.");
-                    }
                     break;
-                  
-
                 case "3":
-                    hero.CheckInventory(); // Извеждане на инвентара
-                    break;
+                    hero.CheckInventory();
 
+                    break;
                 case "4":
                     Environment.Exit(0);
-                    break;
-
-                default:
-                    Console.WriteLine("Invalid choice. Please select a valid option.");
-                    break;
+                    break;                   
             }
         }
+
+
+
+       
     }
 }

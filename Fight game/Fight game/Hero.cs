@@ -1,30 +1,37 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fight_game
+namespace Game
 {
-    public  class Hero 
+   public class Hero :BaseClass
     {
-       public string Name { get; set; }
-        public int HealthPoints { get; set; }
         public int ExperiencePoints { get; set; }
         public List<Item> Inventory { get; set; }
         public Weapon CurrentWeapon { get; set; }
-        public int RequiredExperienceForNextWeapon { get; set; }
-        public Hero(string name, int healthPoints)
-     
+        public int NeededExpForWeapon { get; set; }
+       // public List<Armor> Armors=new List<Armor>();
+
+        /*public void AddArmor(Armor armor)
         {
-            Name = name;
-            HealthPoints = 100; // Начални точки на здраве
-            ExperiencePoints = 0; // Начални точки опит
+            Armors.Add(armor);
+        }*/
+        public Hero(string name,int hp) : base (name, hp)
+        {
+            hp = 100;
+            ExperiencePoints = 0;
             Inventory = new List<Item>();
-            CurrentWeapon = null; // Героят започва без оръжие
-            RequiredExperienceForNextWeapon = 50; // Примерно количество опит, нужно за следващото оръжие
+            CurrentWeapon = null;
+            NeededExpForWeapon = 50;
         }
-        public void Attack(Target target)
+        public void GainEXP(int exp)
+        {
+            ExperiencePoints+= exp;
+            Console.WriteLine($"{Name} recived {exp} exp points.");
+        }
+        public void Attack(Mob target)
         {
             if (target.HealthPoints <= 0)
             {
@@ -37,7 +44,7 @@ namespace Fight_game
 
             if (CurrentWeapon != null)
             {
-                damage = CurrentWeapon.AttackPoints;
+                damage = CurrentWeapon.AttackDamage;
                 CurrentWeapon.Durability--;
 
                 if (CurrentWeapon.Durability <= 0)
@@ -49,58 +56,42 @@ namespace Fight_game
             {
                 damage = 10; // Урон с голи ръце (можете да настроите стойността според вашите изисквания)
             }
-
             target.HealthPoints -= damage;
-
 
             Console.WriteLine($"{Name} attacked {target.Name} for {damage} damage.");
         }
-
-        public bool IsCurrentWeaponBroken()
+        public bool IsWeaponBroken()
         {
-            return CurrentWeapon != null && CurrentWeapon.Durability <= 0;
+            return CurrentWeapon != null && CurrentWeapon.Durability<=0;
         }
         public void CheckInventory()
         {
-            Console.WriteLine($"{Name}'s Inventory:");
+            Console.WriteLine( $"{Name} inventory's");
             foreach (var item in Inventory)
             {
-                Console.WriteLine($"{item.Name}: {item.Quantity}");
+                Console.WriteLine($"{item.Name} : {item.Quantity}");
             }
         }
         public void AddItemToInventory(Item item)
         {
-            // Търсене на предмета в инвентара
-            Item existingItem = Inventory.FirstOrDefault(item => item.Name == item.Name);
-
-            if (existingItem != null)
+            Item exists = Inventory.FirstOrDefault(item=>item.Name==item.Name);
+            if(exists != null)
             {
-                existingItem.Quantity += item.Quantity; // Увеличаване на количество
+                exists.Quantity += item.Quantity;
             }
-            else
-            {
-                // Ако предметът не е в инвентара, създаваме нов предмет и го добавяме
-                Inventory.Add(item);
-            }
-
-            Console.WriteLine($"{Name} received {item.Quantity} {item.Name}(s).");
+            else { Inventory.Add(item); }
+            Console.WriteLine(  $"{Name} recived {item.Name} : {item.Quantity}(s)");
         }
-
-        public void GainExperience(int experience)
+        public void ChangeWeapon(Weapon newWeapon) 
         {
-            ExperiencePoints += experience;
-            Console.WriteLine($"{Name} gained {experience} experience points.");
-        }
-        public void ChangeWeapon(Weapon newWeapon)
-        {
-            if (ExperiencePoints >= RequiredExperienceForNextWeapon)
+            if (ExperiencePoints >= NeededExpForWeapon)
             {
                 CurrentWeapon = newWeapon;
-                Console.WriteLine($"{Name} has equipped {newWeapon.Name}.");
+                Console.WriteLine($"{Name} has equipped {newWeapon.Name} ");
             }
             else
             {
-                Console.WriteLine($"{Name} does not have enough experience to equip {newWeapon.Name}.");
+                Console.WriteLine($"{Name} has not enought exp for {newWeapon.Name} ");
             }
         }
     }
